@@ -1,0 +1,7 @@
+{
+  "name": "book-app-front",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
