@@ -1,0 +1,7 @@
+
+<ion-searchbar placeholder="Pesquisar livro" fill="outline" [(ngModel)]="searchInput" (ionInput)="onSearchInput($event)"></ion-searchbar>
+<ul class="search-result" *ngIf="searchResults.length > 0">
+  <li *ngFor="let book of searchResults" (click)="handleBookSelect(book)">
+    {{ book.name }}
+  </li>
+</ul>

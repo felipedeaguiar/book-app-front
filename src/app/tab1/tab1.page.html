@@ -7,11 +7,49 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
+  <ion-fab (click)="openModal()" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Tab 1</ion-title>
+
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <ion-card *ngFor="let book of myBooks">
+    <ion-card-header>
+      <ion-card-title>
+        {{book.name}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{book.author}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div>
+        <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{book.pivot.status}}</ion-badge>
+      </div>
+      <img src="{{book.image}}">
+      <div>
+        <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage(book)}} % </b></small>
+      </div>
+      <div>
+          <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event, book)" />
+       </div>
+      <div class="action-buttons">
+        <ion-button (click)="shareBook(book)" fill="clear">
+          <ion-icon name="share-social"></ion-icon>
+        </ion-button>
+        <ion-button (click)="deleteBook(book)" fill="clear" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>

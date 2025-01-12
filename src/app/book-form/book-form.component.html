@@ -1,0 +1,6 @@
+<form [formGroup]="myBookForm" (ngSubmit)="save()">
+  <ion-item>
+    <app-search-book formControlName="book_id" (bookSelected)="onBookSelected($event)"></app-search-book>
+  </ion-item>
+  <ion-button expand="block" type="submit" [disabled]="!myBookForm.valid">Iniciar Leitura</ion-button>
+</form>

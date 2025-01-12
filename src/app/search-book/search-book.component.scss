@@ -1,0 +1,16 @@
+.search-result {
+  list-style-type: none;
+  max-height: 200px;
+  overflow: scroll;
+  margin-top: 0px;
+  cursor: pointer;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
+}
+.search-result li {
+  padding: 10px;
+}
+li:hover {
+  background-color: #e0e0e0;
+}
