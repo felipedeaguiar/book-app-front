@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
+import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-search-book',
@@ -15,13 +16,16 @@ export class SearchBookComponent  implements OnInit {
   public selectedBookId: any;
   @Output() bookSelected = new EventEmitter<string>();
 
-  constructor(private http: HttpClient) {
-    this.searchTerms.pipe(
-      debounceTime(300),  // aguarda 300ms após a última digitação antes de considerar a consulta
-      distinctUntilChanged()  // evita pesquisas duplicadas
-    ).subscribe(() => {
-        this.search();
-    });
+  constructor(
+      private http: HttpClient,
+      private apiService: ApiService
+  ) {
+      this.searchTerms.pipe(
+        debounceTime(300),  // aguarda 300ms após a última digitação antes de considerar a consulta
+        distinctUntilChanged()  // evita pesquisas duplicadas
+      ).subscribe(() => {
+          this.search();
+      });
   }
 
   ngOnInit() {
@@ -29,15 +33,7 @@ export class SearchBookComponent  implements OnInit {
   }
 
   search() {
-
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer '+localStorage.getItem('auth_token'), // Exemplo de token de autorização
-    });
-  
-    // Passa os headers como parte das opções
-    const options = { headers: headers };
-
-    this.http.get<any[]>('http://localhost/api/books/search?search='+this.searchInput,options).subscribe(
+    this.apiService.get('books/search?search='+this.searchInput).subscribe(
       (data) => {
         this.searchResults = data;
       },

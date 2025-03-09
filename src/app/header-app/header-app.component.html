@@ -1,0 +1,16 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <!-- Título à esquerda -->
+    <ion-title>
+      {{ nome }}
+    </ion-title>
+
+    <!-- Botões à direita -->
+    <ion-buttons slot="end">
+      <!-- Ícone do menu (ou qualquer outro ícone que você preferir) -->
+      <ion-button (click)="openMenu()">
+        <ion-icon name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

@@ -1,15 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>login</ion-title>
+    <ion-title>Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Login</ion-title>
-    </ion-toolbar>
-  </ion-header>
     <form [formGroup]="loginForm" (ngSubmit)="login()">
       <div class="input-group">
         <ion-item>
@@ -18,7 +13,14 @@
         <ion-item>
           <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
         </ion-item>
-        <ion-button expand="block" [disabled]="!loginForm.valid" type="submit">Login</ion-button>
+        <ion-button expand="block" [disabled]="!loginForm.valid || isLoading" type="submit">Login</ion-button>
       </div>
     </form>
+    <div style="text-align: center">
+        <a [routerLink]="['/reset-password']">Esqueci minha senha</a>
+    </div>
+    <hr>
+    <div style="text-align: center">
+      <a [routerLink]="['/register']">Criar conta</a>
+    </div>
 </ion-content>

@@ -7,17 +7,21 @@ import { Tab1PageRoutingModule } from './tab1-routing.module';
 import {SearchBookComponent} from "../search-book/search-book.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
 import {BookFormComponent} from "../book-form/book-form.component";
+import {HeaderAppComponent} from "../header-app/header-app.component";
 
 @NgModule({
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule,
-    Tab1PageRoutingModule,
-    ReactiveFormsModule
-  ],
-  declarations: [Tab1Page, SearchBookComponent, BookModalComponent, BookFormComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
+    imports: [
+        IonicModule,
+        CommonModule,
+        FormsModule,
+        Tab1PageRoutingModule,
+        ReactiveFormsModule
+    ],
+    declarations: [Tab1Page, SearchBookComponent, BookModalComponent, BookFormComponent, HeaderAppComponent],
+    exports: [
+        HeaderAppComponent
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 
 })
 export class Tab1PageModule {}

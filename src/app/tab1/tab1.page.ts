@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {book} from "ionicons/icons";
-import {AlertController, ModalController} from "@ionic/angular";
+import {AlertController, LoadingController, ModalController} from "@ionic/angular";
 import {BookFormComponent} from "../book-form/book-form.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
+import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-tab1',
@@ -18,34 +19,40 @@ export class Tab1Page {
   constructor(
       private modalCtrl: ModalController,
       private http: HttpClient,
-      private alertController: AlertController
+      private alertController: AlertController,
+      private apiService: ApiService,
+      private loadingController: LoadingController
   ) {
-      this.loadMyBooks();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadMyBooks();
+  }
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BookModalComponent,
+    });
+    modal.onDidDismiss().then(() => {
+      this.loadMyBooks();
     });
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
   }
 
-  private loadMyBooks() {
-
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer '+localStorage.getItem('auth_token'), // Exemplo de token de autorização
+  private async loadMyBooks() {
+    const loading = await this.loadingController.create({
+      message: 'Carregando livros...', // Mensagem do loading
+      spinner: 'bubbles', // Tipo de spinner
+      duration: 0 // O loading vai ficar até ser fechado manualmente
     });
 
-    // Passa os headers como parte das opções
-    const options = { headers: headers };
+    await loading.present(); // Exibir o loading
 
-    this.http.get<any[]>('http://localhost/api/my-books',options).subscribe(
+    this.apiService.get('my-books').subscribe(
       (data) => {
         this.myBooks = data;
-        console.log(this.myBooks);
+        loading.dismiss(); // Exibir o loading
       },
       (error) => {
         console.error('Erro:', error);
@@ -72,14 +79,7 @@ export class Tab1Page {
         {
           text: 'Deletar',
           handler: () => {
-            const headers = new HttpHeaders({
-              'Authorization': 'Bearer '+localStorage.getItem('auth_token'), // Exemplo de token de autorização
-            });
-
-            // Passa os headers como parte das opções
-            const options = { headers: headers };
-
-            this.http.delete('http://localhost/api/my-books/'+book.id, options).subscribe(
+            this.apiService.delete('my-books/'+book.id).subscribe(
             (data) => {
               const index = this.myBooks.indexOf(book);
               if (index > -1) {
@@ -98,67 +98,16 @@ export class Tab1Page {
     await alert.present();
   }
   async updateCurrentPage(event: any, book: any) {
-    const headers = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), // Exemplo de token de autorização
-    });
-
-    // Passa os headers como parte das opções
-    const options = {headers: headers};
-
-    if (book.pages == event.detail.value) {
-      const alert = await this.alertController.create({
-        header: 'Finalizar leitura',
-        message: `Confirma finalização da leitura de "${book.name}"?`,
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            cssClass: 'secondary',
-            handler: () => {
-              console.log('Deleção cancelada');
-            }
-          },
-          {
-            text: 'Confirmar',
-            handler: () => {
-              const headers = new HttpHeaders({
-                'Authorization': 'Bearer ' + localStorage.getItem('auth_token'), // Exemplo de token de autorização
-              });
-
-              // Passa os headers como parte das opções
-              const options = {headers: headers};
-
-              // this.http.delete('http://localhost/api/my-books/' + book.id, options).subscribe(
-              //   (data) => {
-              //     const index = this.myBooks.indexOf(book);
-              //     if (index > -1) {
-              //       this.myBooks.splice(index, 1);
-              //     }
-              //     console.log(`Deleted book: ${book.name}`);
-              //   },
-              //   (error) => {
-              //     console.error('Erro:', error);
-              //   });
-            }
-          }
-        ]
-      });
-
-      await alert.present();
-    }
-
     book.pivot.current_page = event.detail.value;
-    this.http.put<any[]>('http://localhost/api/my-books/' + book.id + '/change-page', {'page': event.detail.value}, options).subscribe(
+    this.apiService.put('my-books/' + book.id + '/change-page', {'page': event.detail.value}).subscribe(
       (data) => {
       },
       (error) => {
         console.error('Erro:', error);
       });
   }
-
-    calculatePorcentage(book: any)
-    {
-        return Math.round((book.pivot.current_page * 100)/book.pages);
-    }
-
+  calculatePorcentage(book: any)
+  {
+      return Math.round((book.pivot.current_page * 100)/book.pages);
+  }
 }

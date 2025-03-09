@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ApiService} from "../services/api.service";
+import {Route, Router} from "@angular/router";
+import {LoadingController, ModalController} from "@ionic/angular";
 
 @Component({
   selector: 'app-book-form',
@@ -9,10 +12,15 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class BookFormComponent  implements OnInit {
   myBookForm: FormGroup;
+  isLoading = false;
 
   constructor(
       private formBuilder: FormBuilder,
-      private http: HttpClient
+      private http: HttpClient,
+      private apiService: ApiService,
+      private modalController: ModalController,
+      private loadingController: LoadingController,
+      private router: Router
   ) {
     this.myBookForm = this.formBuilder.group({
       book_id: ['', [Validators.required]],
@@ -25,19 +33,22 @@ export class BookFormComponent  implements OnInit {
     this.myBookForm.get('book_id')?.setValue(event);
   }
 
-  save() {
+  async save() {
+    this.isLoading = true;
+    const loading = await this.loadingController.create({
+      message: 'Adicionando livro', // Mensagem do loading
+      spinner: 'bubbles', // Tipo de spinner
+      duration: 0 // O loading vai ficar até ser fechado manualmente
+    });
+
+    await loading.present(); // Exibir o loading
+
     if (this.myBookForm.valid) {
-      const headers = new HttpHeaders({
-        'Authorization': 'Bearer '+localStorage.getItem('auth_token'), // Exemplo de token de autorização
-      });
-
-      // Passa os headers como parte das opções
-      const options = { headers: headers };
-
       // Envie os dados do formulário
-      this.http.post<any[]>('http://localhost/api/my-books', this.myBookForm.value, options).subscribe(
+      this.apiService.post('my-books', this.myBookForm.value).subscribe(
         (data) => {
-          console.log('criado com sucesso');
+          loading.dismiss();
+          this.modalController.dismiss();
         },
         (error) => {
           console.error('Erro:', error);

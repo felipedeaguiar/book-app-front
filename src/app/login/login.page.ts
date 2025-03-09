@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import { ToastController } from '@ionic/angular';
 import { Route, Router } from '@angular/router';
+import {ApiService} from "../services/api.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-login',
@@ -11,12 +13,14 @@ import { Route, Router } from '@angular/router';
 })
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
+  protected isLoading = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required]],
@@ -28,21 +32,22 @@ export class LoginPage implements OnInit {
   }
 
   login() {
+    this.isLoading = true;
+
     if (this.loginForm.valid) {
-      // Envie os dados do formulário
-      this.http.post<any>('http://localhost/api/login', this.loginForm.value).subscribe(
-         (data) => {
-          localStorage.setItem('auth_token', data.token);
-          this.router.navigate(['/']); // Substitua '/dashboard' pela rota para onde deseja redirecionar
-        },
-        async (response) => {
-          const toast = await this.toastController.create({
-            message: response.error.message,
-            duration: 1500,
-          });
-      
-          await toast.present();
-        });
+       this.authService.login(this.loginForm.value).subscribe(
+           (data) => {
+             this.authService.setUser(data);
+             this.router.navigate(['/']); // Substitua '/dashboard' pela rota para onde deseja redirecionar
+          },
+          async (response) => {
+            const toast = await this.toastController.create({
+              message: response.error.message,
+              duration: 1500,
+            });
+            this.isLoading = false;
+            await toast.present();
+      });
     }
   }
 }
