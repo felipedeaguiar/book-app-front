@@ -6,6 +6,7 @@ import {AlertController, LoadingController, ModalController} from "@ionic/angula
 import {BookFormComponent} from "../book-form/book-form.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
 import {ApiService} from "../services/api.service";
+import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
 
 @Component({
   selector: 'app-tab1',
@@ -15,6 +16,14 @@ import {ApiService} from "../services/api.service";
 export class Tab1Page {
   myBooks: any[] = [];
   isActionSheetOpen = false;
+
+  status:  { [key: string]: string } = {
+    'in_progress': 'Em progresso',
+    'finished': 'Finalizado'
+  }
+
+  public searchInput: any;
+  private searchTerms = new Subject<string>();
 
   constructor(
       private modalCtrl: ModalController,
@@ -27,6 +36,13 @@ export class Tab1Page {
 
   ngOnInit() {
     this.loadMyBooks();
+
+    this.searchTerms.pipe(
+      debounceTime(300),  // aguarda 300ms após a última digitação antes de considerar a consulta
+      distinctUntilChanged()  // evita pesquisas duplicadas
+    ).subscribe(() => {
+      this.loadMyBooks();
+    });
   }
   async openModal() {
     const modal = await this.modalCtrl.create({
@@ -49,7 +65,7 @@ export class Tab1Page {
 
     await loading.present(); // Exibir o loading
 
-    this.apiService.get('my-books').subscribe(
+    this.apiService.get('my-books?search='+this.searchInput).subscribe(
       (data) => {
         this.myBooks = data;
         loading.dismiss(); // Exibir o loading
@@ -109,5 +125,9 @@ export class Tab1Page {
   calculatePorcentage(book: any)
   {
       return Math.round((book.pivot.current_page * 100)/book.pages);
+  }
+
+  onSearchInput(event: any) {
+    this.searchTerms.next(this.searchInput);
   }
 }

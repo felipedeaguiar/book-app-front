@@ -8,6 +8,7 @@ import { ProfilePageRoutingModule } from './profile-routing.module';
 
 import { ProfilePage } from './profile.page';
 import {Tab1PageModule} from "../tab1/tab1.module";
+import { ProfilePictureComponent } from '../profile-picture/profile-picture.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,6 @@ import {Tab1PageModule} from "../tab1/tab1.module";
     Tab1PageModule,
     ReactiveFormsModule
   ],
-  declarations: [ProfilePage]
+  declarations: [ProfilePage, ProfilePictureComponent]
 })
 export class ProfilePageModule {}

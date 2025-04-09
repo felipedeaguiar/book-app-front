@@ -1,0 +1,19 @@
+.profile-picture {
+  display: flex;
+  flex-direction: column; /* Alinha os itens em coluna */
+  align-items: center; /* Alinha horizontalmente ao centro */
+  justify-content: center; /* Alinha verticalmente ao centro */
+  text-align: center; /* Garante que o texto fique centralizado */
+  margin-bottom: 10px;
+}
+
+.alterar-foto {
+  margin-top: 10px; /* Adiciona um pequeno espaço entre a imagem e o texto */
+  cursor: pointer;
+  color: #007bff; /* Cor do texto */
+  text-decoration: none;
+}
+
+.alterar-foto:hover {
+  text-decoration: underline; /* Adiciona o sublinhado quando o usuário passar o mouse */
+}

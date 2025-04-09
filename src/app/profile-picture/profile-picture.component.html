@@ -1,0 +1,9 @@
+<div class="profile-picture">
+  <ion-avatar>
+    <img alt="Profile" [src]="picture"/>
+  </ion-avatar>
+  <input type="file" id="inputFile" (change)="carregarImagem($event)" #e style="display: none" />
+
+  <a size="small" class="alterar-foto" style="" (click)="alterarImagem()">Alterar foto</a>
+</div>
+

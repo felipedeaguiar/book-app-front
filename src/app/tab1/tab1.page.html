@@ -15,6 +15,23 @@
     </ion-toolbar>
   </ion-header>
 
+  <ion-item>
+    <ion-searchbar [(ngModel)]="searchInput" (ionInput)="onSearchInput($event)"></ion-searchbar>
+  </ion-item>
+<!--    <ion-item>-->
+<!--      <ion-select >-->
+<!--        <ion-select-option value="name">Data de criação</ion-select-option>-->
+<!--        <ion-select-option value="date">Data</ion-select-option>-->
+<!--      </ion-select>-->
+<!--    </ion-item>-->
+
+<!--    <ion-item>-->
+<!--      <ion-select >-->
+<!--        <ion-select-option value="asc">Ascendente</ion-select-option>-->
+<!--        <ion-select-option value="desc">Descendente</ion-select-option>-->
+<!--      </ion-select>-->
+<!--    </ion-item>-->
+
   <ion-card *ngFor="let book of myBooks">
     <ion-card-header>
       <ion-card-title>
@@ -25,8 +42,8 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <div>
-        <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{book.pivot.status}}</ion-badge>
+      <div class="progress">
+        <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{status[book.pivot.status]}}</ion-badge>
       </div>
       <img src="{{book.image}}">
       <div>

@@ -7,6 +7,9 @@
   </ion-header>
 
   <form class="container" [formGroup]="profileForm" (ngSubmit)="edit()">
+
+    <app-profile-picture class="profile-picture" [picture]="photo"></app-profile-picture>
+
     <div class="input-group">
       <ion-item>
         <ion-icon name="mail-outline" slot="start"></ion-icon>

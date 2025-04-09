@@ -17,6 +17,9 @@ export class ApiService {
     return this.http.get<any>(`${this.apiUrl}/${endpoint}`);
   }
 
+  getImage(endpoint: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${endpoint}`,  { responseType: 'blob' as 'json' });
+  }
   // Método POST genérico
   post(endpoint: string, body: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${endpoint}`, body);

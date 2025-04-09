@@ -12,6 +12,8 @@ import {LoadingController, ToastController} from "@ionic/angular";
 export class ProfilePage implements OnInit {
   profileForm: FormGroup;
   isLoading = false;
+  photo: string | null = null;
+
   constructor(
     private apiService: ApiService,
     private formBuilder: FormBuilder,
@@ -28,6 +30,7 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
     this.getProfile();
+    this.getProfilePic();
   }
 
   async edit() {
@@ -80,6 +83,12 @@ export class ProfilePage implements OnInit {
         // this.isLoading = false;
         // await toast.present();
       });
+  }
+
+  getProfilePic() {
+    this.apiService.getImage('user/profile/picture').subscribe((result) => {
+       this.photo = URL.createObjectURL(result);
+    });
   }
 
 }
