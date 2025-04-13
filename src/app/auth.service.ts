@@ -14,6 +14,7 @@ export class AuthService {
   login(credentials: any) {
     return this.apiService.post('login', credentials);
   }
+
   isAuthenticated(): boolean {
     return this.getLoggedUser() != null;
   }
@@ -22,10 +23,13 @@ export class AuthService {
     localStorage.setItem('auth_token', token);
   }
 
+  logout() {
+    return this.apiService.post('logout', {});
+  }
+
   setUser(user: any) {
     this.user = user;
     localStorage.setItem('user', user);
-    this.setAuthToken(this.user.token);
   }
 
   getLoggedUser() {

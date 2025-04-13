@@ -38,6 +38,7 @@ export class LoginPage implements OnInit {
        this.authService.login(this.loginForm.value).subscribe(
            (data) => {
              this.authService.setUser(data);
+             this.authService.setAuthToken(data.token);
              this.router.navigate(['/']); // Substitua '/dashboard' pela rota para onde deseja redirecionar
           },
           async (response) => {
