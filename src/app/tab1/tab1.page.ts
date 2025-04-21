@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {book} from "ionicons/icons";
-import {AlertController, LoadingController, ModalController} from "@ionic/angular";
+import {AlertController, LoadingController, ModalController, ToastController} from "@ionic/angular";
 import {BookFormComponent} from "../book-form/book-form.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
 import {ApiService} from "../services/api.service";
@@ -30,7 +30,8 @@ export class Tab1Page {
       private http: HttpClient,
       private alertController: AlertController,
       private apiService: ApiService,
-      private loadingController: LoadingController
+      private loadingController: LoadingController,
+      private toastController: ToastController
   ) {
   }
 
@@ -74,11 +75,52 @@ export class Tab1Page {
         console.error('Erro:', error);
       });
   }
+
   shareBook(book: any) {
     // Lógica para compartilhar o livro
     console.log(`Sharing book: ${book.name}`);
   }
 
+  selectBook() {
+    const input = document.getElementById('inputFile');
+    input?.click();
+  }
+
+  uploadBook(book:any, event: any) {
+    const file = event.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.apiService.post('my-books/'+book.id+'/upload', formData).subscribe(
+      async (result) => {
+        const toast = await this.toastController.create({
+          message: 'Upload realizado com sucesso',
+          duration: 1500,
+        });
+        await toast.present();
+      },
+      async (result) => {
+        const toast = await this.toastController.create({
+          message: result.error.errors.file[0],
+          duration: 1500,
+        });
+        await toast.present();
+      }
+    );
+  }
+
+  async openPdf(book: any) {
+    this.apiService.getImage('my-books/'+book.id+'/download').subscribe((res) => {
+      const blob = new Blob([res], { type: 'application/pdf' });
+      const blobUrl = window.URL.createObjectURL(blob);
+      window.open(blobUrl, '_blank');
+    });
+  }
   async deleteBook(book: any) {
     const alert = await this.alertController.create({
       header: 'Confirmar Deleção',

@@ -45,7 +45,7 @@
       <div class="progress">
         <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{status[book.pivot.status]}}</ion-badge>
       </div>
-      <img src="{{book.image}}">
+      <img class="book-cover" src="{{book.image}}" (click)="openPdf(book)">
       <div>
         <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage(book)}} % </b></small>
       </div>
@@ -53,6 +53,10 @@
           <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event, book)" />
        </div>
       <div class="action-buttons">
+        <ion-button (click)="selectBook()" fill="clear">
+          <ion-icon name="push-outline"></ion-icon>
+          <input type="file" id="inputFile" (change)="uploadBook(book, $event)" #e style="display: none" />
+        </ion-button>
         <ion-button (click)="shareBook(book)" fill="clear">
           <ion-icon name="share-social"></ion-icon>
         </ion-button>
