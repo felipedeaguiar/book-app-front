@@ -1,23 +1,9 @@
-# Etapa 1: Build da aplicação Ionic
-FROM node:20-alpine AS build
 
-WORKDIR /app
-
-# Copiar package.json e instalar dependências
-COPY package*.json ./
-RUN npm install
-
-# Copiar o código da aplicação Ionic
-COPY . .
-
-# Gerar build para produção
-RUN npm run build --prod
-
-# Etapa 2: Servir a aplicação com Nginx
+# Usando Nginx para servir os arquivos estáticos gerados
 FROM nginx:alpine
 
-# Copiar os arquivos gerados para o Nginx
-COPY --from=build /app/www /usr/share/nginx/html
+# Copia apenas a pasta 'www' gerada pelo Ionic para o diretório do Nginx
+COPY ./www /usr/share/nginx/html
 
-# Expor a porta 80
+# Expondo a porta 80 para o Nginx
 EXPOSE 80
