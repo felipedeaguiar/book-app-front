@@ -32,11 +32,11 @@ export class ProfilePictureComponent  implements OnInit {
   }
 
   alterarImagem() {
-    const input = document.getElementById('inputFile');
+    const input = document.getElementById('pictureFile');
     input?.click();
   }
 
-  sendApi(file: any) {  
+  sendApi(file: any) {
     const formData = new FormData();
     formData.append('file', file);
 

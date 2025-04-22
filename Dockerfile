@@ -1,4 +1,3 @@
-
 # Usando Nginx para servir os arquivos estáticos gerados
 FROM nginx:alpine
 
