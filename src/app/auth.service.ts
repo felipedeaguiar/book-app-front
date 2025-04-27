@@ -16,7 +16,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return this.getLoggedUser() != null;
+    return localStorage.getItem('auth_token') != null && localStorage.getItem('auth_token') !== 'null';
   }
 
   setAuthToken(token: any) {
@@ -33,6 +33,6 @@ export class AuthService {
   }
 
   getLoggedUser() {
-    return this.user || localStorage.getItem('auth_token');
+    return this.user;
   }
 }

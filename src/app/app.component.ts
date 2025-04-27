@@ -30,4 +30,8 @@ export class AppComponent {
   goToProfile() {
     this.router.navigate(['perfil']);
   }
+
+  isLoggedIn() {
+    return this.authService.isAuthenticated();
+  }
 }
