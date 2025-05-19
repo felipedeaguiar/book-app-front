@@ -115,11 +115,34 @@ export class Tab1Page {
   }
 
   async openPdf(book: any) {
-    this.apiService.getImage('my-books/'+book.id+'/download').subscribe((res) => {
-      const blob = new Blob([res], { type: 'application/pdf' });
-      const blobUrl = window.URL.createObjectURL(blob);
-      window.open(blobUrl, '_blank');
+    if (!book.pivot.file) {
+      const toast = await this.toastController.create({
+        message: 'Nenhum arquivo adicionado, adicione no ícone de upload abaixo',
+        duration: 3000,
+      });
+      await toast.present();
+      return;
+    }
+    const loading = await this.loadingController.create({
+      message: 'Aguarde a abertura do arquivo...', // Mensagem do loading
+      spinner: 'bubbles', // Tipo de spinner
+      duration: 0 // O loading vai ficar até ser fechado manualmente
     });
+
+    await loading.present();
+
+    this.apiService.getImage('my-books/'+book.id+'/download').subscribe(
+      (res) => {
+        const blob = new Blob([res], { type: 'application/pdf' });
+        const blobUrl = window.URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+
+        loading.dismiss();
+      },
+      async (error) => {
+
+      })
+    ;
   }
   async deleteBook(book: any) {
     const alert = await this.alertController.create({

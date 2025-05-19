@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
+import {ToastController} from "@ionic/angular";
 
 @Component({
   selector: 'app-profile-picture',
@@ -10,7 +11,10 @@ export class ProfilePictureComponent  implements OnInit {
 
   @Input() picture: string | ArrayBuffer| null = null;
 
-  constructor(protected apiService: ApiService) { }
+  constructor(
+    protected apiService: ApiService,
+    protected toastController: ToastController
+  ) { }
 
   ngOnInit() {}
 
@@ -41,11 +45,19 @@ export class ProfilePictureComponent  implements OnInit {
     formData.append('file', file);
 
     this.apiService.post('user/profile/picture', formData).subscribe(
-      (result) => {
-        console.log(result);
+      async (result) => {
+        const toast = await this.toastController.create({
+          message: result.message,
+          duration: 3000,
+        });
+        await toast.present();
       },
-      (error) => {
-        console.error(error);
+      async (error) => {
+        const toast = await this.toastController.create({
+          message: error.error.message,
+          duration: 3000,
+        });
+        await toast.present();
       }
     );
   }
