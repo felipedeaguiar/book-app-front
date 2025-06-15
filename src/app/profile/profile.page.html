@@ -27,6 +27,10 @@
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
         <ion-input type="password" placeholder="Nova senha" formControlName="password"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+        <ion-radio placeholder="Two factor" formControlName="two_factor">Habilitar two factor</ion-radio>
+      </ion-item>
       <ion-button expand="block" [disabled]="!profileForm.valid || isLoading" type="submit">Salvar</ion-button>
     </div>
   </form>

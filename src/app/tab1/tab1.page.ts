@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {book} from "ionicons/icons";
@@ -7,6 +7,12 @@ import {BookFormComponent} from "../book-form/book-form.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
 import {ApiService} from "../services/api.service";
 import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
+import * as pdfjsLib from 'pdfjs-dist';
+import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Route, Router } from '@angular/router';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
 
 @Component({
   selector: 'app-tab1',
@@ -16,6 +22,10 @@ import {debounceTime, distinctUntilChanged, Subject} from "rxjs";
 export class Tab1Page {
   myBooks: any[] = [];
   isActionSheetOpen = false;
+  pdfUrl: string = '';
+  pdfDoc: any;
+
+  @ViewChild('pdfCanvas', { static: false }) pdfCanvasRef!: ElementRef<HTMLCanvasElement>;
 
   status:  { [key: string]: string } = {
     'in_progress': 'Em progresso',
@@ -31,7 +41,8 @@ export class Tab1Page {
       private alertController: AlertController,
       private apiService: ApiService,
       private loadingController: LoadingController,
-      private toastController: ToastController
+      private toastController: ToastController,
+      private router: Router
   ) {
   }
 
@@ -114,6 +125,10 @@ export class Tab1Page {
     );
   }
 
+  detail(bookId: any) {
+    this.router.navigate(['/book-detail/'+bookId]);
+  }
+
   async openPdf(book: any) {
     if (!book.pivot.file) {
       const toast = await this.toastController.create({
@@ -134,15 +149,20 @@ export class Tab1Page {
     this.apiService.getImage('my-books/'+book.id+'/download').subscribe(
       (res) => {
         const blob = new Blob([res], { type: 'application/pdf' });
-        const blobUrl = window.URL.createObjectURL(blob);
-        window.open(blobUrl, '_blank');
 
+        blob.arrayBuffer().then((arrayBuffer) => {
+          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+
+          loadingTask.promise.then((pdf) => {
+            this.pdfDoc = pdf;
+            this.renderPage(book.pivot.current_page);
+          });
+        });
         loading.dismiss();
       },
       async (error) => {
 
       })
-    ;
   }
   async deleteBook(book: any) {
     const alert = await this.alertController.create({
@@ -182,6 +202,7 @@ export class Tab1Page {
     book.pivot.current_page = event.detail.value;
     this.apiService.put('my-books/' + book.id + '/change-page', {'page': event.detail.value}).subscribe(
       (data) => {
+        this.renderPage(book.pivot.current_page);
       },
       (error) => {
         console.error('Erro:', error);
@@ -195,4 +216,22 @@ export class Tab1Page {
   onSearchInput(event: any) {
     this.searchTerms.next(this.searchInput);
   }
+
+  renderPage(pageNumber: number) {
+    this.pdfDoc.getPage(pageNumber).then((page: any) => {
+      const canvas = this.pdfCanvasRef.nativeElement;
+      const context = canvas.getContext('2d');
+
+      const viewport = page.getViewport({ scale: 1.5 });
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      const renderContext = {
+        canvasContext: context!,
+        viewport: viewport
+      };
+      page.render(renderContext);
+    });
+  }
+
 }

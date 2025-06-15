@@ -31,6 +31,19 @@
 <!--        <ion-select-option value="desc">Descendente</ion-select-option>-->
 <!--      </ion-select>-->
 <!--    </ion-item>-->
+  <ion-card *ngIf="myBooks.length === 0">
+    <ion-card-header>
+      <ion-card-title>
+        Nenhum livro encontrado
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="searchInput">
+      <p>Não foi encontrado nenhum livro com os termos da sua pesquisa. Que tal adicionar um livro no botão abaixo?</p>
+    </ion-card-content>
+    <ion-card-content *ngIf="!searchInput">
+      <p>Você ainda não possui livros cadastrados. Clique no botão de adicionar para começar.</p>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card *ngFor="let book of myBooks">
     <ion-card-header>
@@ -42,27 +55,32 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <div class="progress">
-        <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{status[book.pivot.status]}}</ion-badge>
+      <div class="pdf-viewer" *ngIf="pdfDoc">
+        <canvas #pdfCanvas style="width: 100%"></canvas>
       </div>
-      <img class="book-cover" src="{{book.image}}" (click)="openPdf(book)">
+      <div class="book-info" *ngIf="!pdfDoc">
+        <div class="progress">
+          <ion-badge style="padding: 5px" [ngStyle]="{ 'background-color': book.pivot.status === 'finished' ? 'green' : 'blue'}">{{status[book.pivot.status]}}</ion-badge>
+        </div>
+        <img class="book-cover" src="{{book.image}}" (click)="detail(book.id)">
+        <div class="action-buttons">
+          <ion-button (click)="selectBook()" fill="clear">
+            <ion-icon name="push-outline"></ion-icon>
+            <input type="file" id="inputFile" (change)="uploadBook(book, $event)" #e style="display: none" />
+          </ion-button>
+          <ion-button (click)="shareBook(book)" fill="clear">
+            <ion-icon name="share-social"></ion-icon>
+          </ion-button>
+          <ion-button (click)="deleteBook(book)" fill="clear" color="danger">
+            <ion-icon name="trash"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
       <div>
         <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage(book)}} % </b></small>
       </div>
       <div>
-          <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event, book)" />
-       </div>
-      <div class="action-buttons">
-        <ion-button (click)="selectBook()" fill="clear">
-          <ion-icon name="push-outline"></ion-icon>
-          <input type="file" id="inputFile" (change)="uploadBook(book, $event)" #e style="display: none" />
-        </ion-button>
-        <ion-button (click)="shareBook(book)" fill="clear">
-          <ion-icon name="share-social"></ion-icon>
-        </ion-button>
-        <ion-button (click)="deleteBook(book)" fill="clear" color="danger">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
+        <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event, book)" />
       </div>
     </ion-card-content>
   </ion-card>

@@ -8,6 +8,7 @@ import {SearchBookComponent} from "../search-book/search-book.component";
 import {BookModalComponent} from "../book-modal/book-modal.component";
 import {BookFormComponent} from "../book-form/book-form.component";
 import {HeaderAppComponent} from "../header-app/header-app.component";
+import {SafePipe} from "../safe.pipe";
 
 @NgModule({
     imports: [
@@ -17,9 +18,10 @@ import {HeaderAppComponent} from "../header-app/header-app.component";
         Tab1PageRoutingModule,
         ReactiveFormsModule
     ],
-    declarations: [Tab1Page, SearchBookComponent, BookModalComponent, BookFormComponent, HeaderAppComponent],
+    declarations: [Tab1Page, SearchBookComponent, BookModalComponent, BookFormComponent, HeaderAppComponent, SafePipe],
     exports: [
-        HeaderAppComponent
+        HeaderAppComponent,
+        SafePipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA] // Add this line
 

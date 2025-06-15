@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>book-detail</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-card-content>
+  <div class="pdf-viewer" *ngIf="pdfDoc">
+    <canvas #pdfCanvas style="width: 100%"></canvas>
+  </div>
+  <div class="controls">
+    <button ion-button fill="clear" (click)="previousPage()" [disabled]="book.pivot.current_page <= 1">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </button>
+    <button ion-button fill="clear" (click)="nextPage()" [disabled]="book.pivot.current_page >= book.pages">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </button>
+  </div>
+  <div>
+    <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage()}} % </b></small>
+  </div>
+  <div>
+    <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event)" />
+  </div>
+</ion-card-content>
