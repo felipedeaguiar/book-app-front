@@ -1,8 +1,8 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as pdfjsLib from "pdfjs-dist";
-import {ApiService} from "../services/api.service";
-import {ActivatedRoute} from "@angular/router";
-import {LoadingController} from "@ionic/angular";
+import { ApiService } from "../services/api.service";
+import { ActivatedRoute } from "@angular/router";
+import { LoadingController } from "@ionic/angular";
 
 @Component({
   selector: 'app-book-detail',
@@ -13,7 +13,7 @@ export class BookDetailPage implements OnInit {
 
   @ViewChild('pdfCanvas', { static: false }) pdfCanvasRef!: ElementRef<HTMLCanvasElement>;
 
-  private bookId: any;
+  bookId: any;
   pdfUrl: string = '';
   pdfDoc: any;
   book: any;
@@ -27,55 +27,46 @@ export class BookDetailPage implements OnInit {
   ngOnInit() {
     this.activatedRoute.params.subscribe(paramsId => {
       this.bookId = paramsId['bookId'];
+      this.loadBookAndPdf();
     });
-    this.loadBook();
-    this.downloadBook();
   }
 
-  async loadBook() {
+  async loadBookAndPdf() {
     const loading = await this.loadingController.create({
-      message: 'Loading book...'
+      message: 'Carregando livro...'
     });
-    loading.present();
+    await loading.present();
 
+    try {
+      const res: any = await this.apiService.get('my-books/' + this.bookId).toPromise();
+      this.book = res.data;
 
-    this.apiService.get('my-books/' + this.bookId).subscribe(
-      (res) => {
-        this.book = res.data;
-        this.downloadBook();  
-        loading.dismiss();
-      },
-      async (error) => {
-        // console.error(error);
-        // const toast = await this.loadingController.create({
-        //   message: 'Error loading book.',
-        //   duration: 1500
-        // });
-        // await toast.present();
-        // loading.dismiss();
-      }
-    );
+      await this.loadPdf();
+
+      this.renderPage(this.book.pivot.current_page);
+    } catch (error) {
+      console.error('Erro ao carregar livro:', error);
+    } finally {
+      loading.dismiss();
+    }
   }
 
-  downloadBook() {
-    this.apiService.getImage('my-books/'+this.bookId+'/download').subscribe(
-      (res) => {
-        const blob = new Blob([res], { type: 'application/pdf' });
+  async loadPdf() {
+    try {
+      const res: any = await this.apiService.getImage('my-books/' + this.bookId + '/download').toPromise();
+      const blob = new Blob([res], { type: 'application/pdf' });
+      const arrayBuffer = await blob.arrayBuffer();
 
-        blob.arrayBuffer().then((arrayBuffer) => {
-          const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-
-          loadingTask.promise.then((pdf) => {
-            this.pdfDoc = pdf;
-            this.renderPage(this.book.pivot.current_page);
-          });
-        });
-      },
-      async (error) => {}
-    )
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      this.pdfDoc = await loadingTask.promise;
+    } catch (error) {
+      console.error('Erro ao carregar PDF:', error);
+    }
   }
 
   renderPage(pageNumber: number) {
+    if (!this.pdfDoc) return;
+
     this.pdfDoc.getPage(pageNumber).then((page: any) => {
       const canvas = this.pdfCanvasRef.nativeElement;
       const context = canvas.getContext('2d');
@@ -92,46 +83,40 @@ export class BookDetailPage implements OnInit {
     });
   }
 
-  calculatePorcentage()
-  {
-      return Math.round((this.book.pivot.current_page * 100)/this.book.pages);
+  calculatePorcentage() {
+    if (!this.book?.pivot) return 0;
+    return Math.round((this.book.pivot.current_page * 100) / this.book.pages);
   }
 
   async updateCurrentPage(event: any) {
-    this.book.pivot.current_page = event.detail.value;
-    this.apiService.put('my-books/' + this.book.id + '/change-page', {'page': event.detail.value}).subscribe(
-      (data) => {
-        this.renderPage(this.book.pivot.current_page);
-      },
-      (error) => {
-        console.error('Erro:', error);
-      });
+    const newPage = event.detail.value;
+    this.book.pivot.current_page = newPage;
+
+    this.updatePageOnServer();
   }
 
-  previousPage() {    
+  async previousPage() {
     if (this.book.pivot.current_page > 1) {
       this.book.pivot.current_page--;
-      this.apiService.put('my-books/' + this.book.id + '/change-page', {'page': this.book.pivot.current_page}).subscribe(
-        (data) => {
-          this.renderPage(this.book.pivot.current_page);
-        },
-        (error) => {
-          console.error('Erro:', error);
-        });
+      await this.updatePageOnServer();
     }
   }
 
-  nextPage() {
+  async nextPage() {
     if (this.book.pivot.current_page < this.book.pages) {
       this.book.pivot.current_page++;
-      this.apiService.put('my-books/' + this.book.id + '/change-page', {'page': this.book.pivot.current_page}).subscribe(
-        (data) => {
-          this.renderPage(this.book.pivot.current_page);
-        },
-        (error) => {
-          console.error('Erro:', error);
-        });
+      await this.updatePageOnServer();
     }
   }
 
+  private async updatePageOnServer() {
+    const currentPage = this.book.pivot.current_page;
+
+    try {
+      await this.apiService.put('my-books/' + this.book.id + '/change-page', { page: currentPage }).toPromise();
+      this.renderPage(currentPage);
+    } catch (error) {
+      console.error('Erro ao atualizar página:', error);
+    }
+  }
 }
