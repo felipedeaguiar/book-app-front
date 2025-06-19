@@ -91,13 +91,14 @@ export class BookDetailPage implements OnInit {
   async updateCurrentPage(event: any) {
     const newPage = event.detail.value;
     this.book.pivot.current_page = newPage;
-
-    this.updatePageOnServer();
+    this.renderPage(this.book.pivot.current_page);
+    this.updatePageOnServer()
   }
 
   async previousPage() {
     if (this.book.pivot.current_page > 1) {
       this.book.pivot.current_page--;
+      this.renderPage(this.book.pivot.current_page);
       await this.updatePageOnServer();
     }
   }
@@ -105,6 +106,7 @@ export class BookDetailPage implements OnInit {
   async nextPage() {
     if (this.book.pivot.current_page < this.book.pages) {
       this.book.pivot.current_page++;
+      this.renderPage(this.book.pivot.current_page);
       await this.updatePageOnServer();
     }
   }
@@ -114,7 +116,6 @@ export class BookDetailPage implements OnInit {
 
     try {
       await this.apiService.put('my-books/' + this.book.id + '/change-page', { page: currentPage }).toPromise();
-      this.renderPage(currentPage);
     } catch (error) {
       console.error('Erro ao atualizar página:', error);
     }

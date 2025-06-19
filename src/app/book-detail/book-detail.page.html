@@ -9,30 +9,30 @@
     <canvas #pdfCanvas style="width: 100%"></canvas>
   </div>
   <div class="controls" *ngIf="book?.pivot">
-    <ion-grid>
-      <ion-row class="ion-align-items-center">
-        
-        <!-- Botão anterior -->
-        <ion-col size="2" class="ion-text-start">
-          <ion-button size="large" fill="clear" (click)="previousPage()" [disabled]="book.pivot.current_page <= 1">
-            <ion-icon name="chevron-back-outline" size="large"></ion-icon>
-          </ion-button>
-        </ion-col>
-  
-        <!-- Informações e range -->
-        <ion-col size="8" class="ion-text-center">
-          <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage()}} % </b></small>
-          <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event)"></ion-range>
-        </ion-col>
-  
-        <!-- Botão próximo -->
-        <ion-col size="2" class="ion-text-end">
-          <ion-button size="large" fill="clear" (click)="nextPage()" [disabled]="book.pivot.current_page >= book.pages">
-            <ion-icon name="chevron-forward-outline" size="large"></ion-icon>
-          </ion-button>
-        </ion-col>
-  
-      </ion-row>
-    </ion-grid>
-  </div>
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      
+      <!-- Botão anterior -->
+      <ion-col size="2" class="ion-text-start">
+        <ion-button size="large" fill="clear" (click)="previousPage()" [disabled]="book.pivot.current_page <= 1">
+          <ion-icon name="chevron-back-outline" size="large"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <!-- Informações e range -->
+      <ion-col size="8" class="ion-text-center">
+        <small>Página {{book.pivot.current_page}} de {{book.pages}} - <b>{{calculatePorcentage()}} % </b></small>
+        <ion-range type="range" [min]="0" [max]="book.pages" [value]="book.pivot.current_page" (ionChange)="updateCurrentPage($event)"></ion-range>
+      </ion-col>
+
+      <!-- Botão próximo -->
+      <ion-col size="2" class="ion-text-end">
+        <ion-button size="large" fill="clear" (click)="nextPage()" [disabled]="book.pivot.current_page >= book.pages">
+          <ion-icon name="chevron-forward-outline" size="large"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+</div>
 </ion-card-content>
