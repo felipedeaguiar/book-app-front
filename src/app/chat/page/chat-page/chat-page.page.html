@@ -1,0 +1,22 @@
+<ion-list lines="inset" class="conversation-list">
+  <ion-item
+    *ngFor="let convo of conversations"
+    button
+    detail
+    (click)="openConversation(convo)"
+  >
+    <ion-avatar slot="start">
+      <img [src]="avatarCache[convo.user.id] || defaultAvatar" />
+    </ion-avatar>
+
+    <ion-label>
+      <div class="conversation-header">
+        <strong>{{ convo.user.name }}</strong>
+      </div>
+      <div class="preview">
+        <span *ngIf="convo.last_message.sender_id === currentUserId">Você: </span>
+        {{ convo.last_message.message }}
+      </div>
+    </ion-label>
+  </ion-item>
+</ion-list>

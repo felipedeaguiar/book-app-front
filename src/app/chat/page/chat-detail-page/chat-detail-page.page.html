@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Conversa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none">
+    <ion-item *ngFor="let cvs of conversations" [class.received]="!cvs.right" [class.sent]="cvs.right">
+      <ion-label>
+        {{ cvs.message }}
+        <p class="timestamp">sd</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item lines="none">
+      <ion-input placeholder="Digite sua mensagem..." [(ngModel)]="messageText"></ion-input>
+      <ion-button fill="clear" (click)="sendMessage()">Enviar</ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

@@ -14,8 +14,8 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule),
+        path: 'conversations',
+        loadChildren: () => import('../chat/chat.module').then(m => m.ChatModule),
         canActivate: [AuthGuard],
       },
       {
