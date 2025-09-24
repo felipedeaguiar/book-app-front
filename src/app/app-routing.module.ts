@@ -26,6 +26,14 @@ const routes: Routes = [
     path: 'book-detail/:bookId',
     loadChildren: () => import('./book-detail/book-detail.module').then( m => m.BookDetailPageModule)
   },
+  {
+    path: 'contact-list',
+    loadChildren: () => import('./contact/contact-list/contact-list.module').then( m => m.ContactListPageModule)
+  },
+  {
+    path: 'contact-list',
+    loadChildren: () => import('./contact/contact-list/contact-list.module').then( m => m.ContactListPageModule)
+  },
 ];
 @NgModule({
   imports: [

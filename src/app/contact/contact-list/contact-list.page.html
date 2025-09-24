@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Contatos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Contatos</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list lines="inset" class="conversation-list">
+    <ion-item
+      *ngFor="let con of contacts"
+      button
+      detail
+      (click)="openConversation(con)"
+    >
+      <ion-label>
+        <div class="conversation-header">
+          <strong>{{ con.name }}</strong>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

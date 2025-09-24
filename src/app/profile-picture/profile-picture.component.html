@@ -1,6 +1,6 @@
 <div class="profile-picture">
   <ion-avatar>
-    <img alt="Profile" [src]="picture"/>
+    <img alt="Profile" [src]="picture ? picture : 'assets/avatar.svg'"/>
   </ion-avatar>
   <input type="file" id="pictureFile" (change)="carregarImagem($event)" #e style="display: none" />
 

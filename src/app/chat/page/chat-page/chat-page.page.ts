@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ApiService} from "../../../services/api.service";
 import {Router} from "@angular/router";
+import {BookModalComponent} from "../../../book-modal/book-modal.component";
+import {ContactListPage} from "../../../contact/contact-list/contact-list.page";
+import {ModalController} from "@ionic/angular";
 
 @Component({
   selector: 'app-chat-page',
@@ -10,11 +13,12 @@ import {Router} from "@angular/router";
 export class ChatPagePage implements OnInit {
   protected conversations: any;
   avatarCache: { [id: string]: string } = {};
-  defaultAvatar = 'assets/default-avatar.png';
+  defaultAvatar = 'assets/avatar.svg';
 
   constructor(
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private modalCtrl: ModalController,
   ) {}
 
   ngOnInit() {
@@ -27,7 +31,9 @@ export class ChatPagePage implements OnInit {
         this.conversations = data;
         this.conversations.forEach((convo:any) => {
           // pré-carrega os avatares
-          this.getUserAvatar(convo.user.id);
+          if (convo.user.profile_pic) {
+            this.getUserAvatar(convo.user.id);
+          }
         });
       },
       (error) => {
@@ -48,5 +54,13 @@ export class ChatPagePage implements OnInit {
 
   openConversation(convo: any) {
     this.router.navigate(['/tabs/conversations', convo.user.id]);
+  }
+
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: ContactListPage,
+    });
+
+    modal.present();
   }
 }
