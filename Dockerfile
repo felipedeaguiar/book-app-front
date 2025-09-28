@@ -1,10 +1,14 @@
-# Usando Nginx para servir os arquivos estáticos gerados
+
+# Etapa 1 - Build
+FROM node:18 as build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Etapa 2 - Servir os assets
 FROM nginx:alpine
-
-# Copia apenas a pasta 'www' gerada pelo Ionic para o diretório do Nginx
-COPY ./www /usr/share/nginx/html
-
+COPY --from=build /app/www /usr/share/nginx/html
 COPY ./docker/nginx/frontend.conf /etc/nginx/conf.d/default.conf
-
-# Expondo a porta 80 para o Nginx
 EXPOSE 80
