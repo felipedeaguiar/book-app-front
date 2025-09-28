@@ -11,7 +11,7 @@ import {ModalController} from "@ionic/angular";
   styleUrls: ['./chat-page.page.scss'],
 })
 export class ChatPagePage implements OnInit {
-  protected conversations: any;
+  protected conversations: any = [];
   avatarCache: { [id: string]: string } = {};
   defaultAvatar = 'assets/avatar.svg';
 
@@ -22,6 +22,10 @@ export class ChatPagePage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadConversations();
+  }
+
+  ionViewWillEnter() {
     this.loadConversations();
   }
 

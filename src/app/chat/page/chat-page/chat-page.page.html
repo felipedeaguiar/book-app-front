@@ -1,27 +1,37 @@
-<ion-list lines="inset" class="conversation-list">
-  <ion-item
-    *ngFor="let convo of conversations"
-    button
-    detail
-    (click)="openConversation(convo)"
-  >
-    <ion-avatar slot="start">
-      <img [src]="avatarCache[convo.user.id] || defaultAvatar" />
-    </ion-avatar>
-
-    <ion-label>
-      <div class="conversation-header">
-        <strong>{{ convo.user.name }}</strong>
-      </div>
-      <div class="preview">
-        <span *ngIf="convo.last_message.sender_id === currentUserId">Você: </span>
-        {{ convo.last_message.message }}
-      </div>
-    </ion-label>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Conversas</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item *ngIf="conversations.length === 0" class="no-conversations">
+    <span>Nenhuma conversa encontrada. Clique no botão abaixo para iniciar uma nova conversa.</span>
   </ion-item>
-</ion-list>
-<ion-fab (click)="openModal()" vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button>
-    <ion-icon name="add"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
+  <ion-list lines="inset" class="conversation-list">
+    <ion-item
+      *ngFor="let convo of conversations"
+      button
+      detail
+      (click)="openConversation(convo)"
+    >
+      <ion-avatar slot="start">
+        <img [src]="avatarCache[convo.user.id] || defaultAvatar" />
+      </ion-avatar>
+
+      <ion-label>
+        <div class="conversation-header">
+          <strong>{{ convo.user.name }}</strong>
+        </div>
+        <div class="preview">
+          {{ convo.last_message.message }}
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ion-fab (click)="openModal()" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+

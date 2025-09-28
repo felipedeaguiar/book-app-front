@@ -3,15 +3,16 @@ ion-item.sent {
     text-align: right;
     --background: #dcf8c6;
   }
-  
+
   ion-item.received {
     justify-content: flex-start;
     text-align: left;
     --background: #f1f0f0;
   }
-  
+
   .timestamp {
     font-size: 0.75rem;
     color: #888;
     margin-top: 4px;
   }
+  

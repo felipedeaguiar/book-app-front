@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {CommonModule, NgForOf} from '@angular/common';
+import {CommonModule, NgForOf, NgIf} from '@angular/common';
 
 import { ChatRoutingModule } from './chat-routing.module';
 import {IonicModule} from "@ionic/angular";
@@ -12,10 +12,11 @@ import { ChatDetailPagePage } from './page/chat-detail-page/chat-detail-page.pag
   declarations: [
     ChatPagePage
   ],
-  imports: [
-    IonicModule,
-    ChatRoutingModule,
-    NgForOf
-  ]
+    imports: [
+        IonicModule,
+        ChatRoutingModule,
+        NgForOf,
+        NgIf
+    ]
 })
 export class ChatModule { }
