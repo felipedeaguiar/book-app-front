@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_run:
+    workflows: ["Build"]   # <- espera o workflow "Build"
+    types:
+      - completed
+    branches:
+      - master
+      
+# Authenticate to the the server via ssh 
+# and run our deployment script 
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            APP_DIR="$HOME/book-app-front"
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Clonando projeto..."
+              git clone https://github.com/felipedeaguiar/book-app-front.git $APP_DIR
+            fi
+
+            cd $APP_DIR
+            git pull origin master
+
+            echo "Construindo imagens Docker..."
+            docker-compose -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            
+            echo "Recriando containers..."
