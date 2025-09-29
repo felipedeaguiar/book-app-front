@@ -56,31 +56,26 @@ export class Tab1Page {
       this.loadMyBooks();
     });
   }
+
+  viewDidEnter() {
+    this.loadMyBooks();
+  }
+
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: BookModalComponent,
     });
-    modal.onDidDismiss().then(() => {
-      this.loadMyBooks();
-    });
+    modal.onDidDismiss().then(() => {});
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
   }
 
   private async loadMyBooks() {
-    const loading = await this.loadingController.create({
-      message: 'Carregando livros...', // Mensagem do loading
-      spinner: 'bubbles', // Tipo de spinner
-      duration: 0 // O loading vai ficar até ser fechado manualmente
-    });
-
-    await loading.present(); // Exibir o loading
-
+    
     this.apiService.get('my-books?search='+this.searchInput).subscribe(
       (data) => {
         this.myBooks = data;
-        loading.dismiss(); // Exibir o loading
       },
       (error) => {
         console.error('Erro:', error);
