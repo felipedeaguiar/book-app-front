@@ -19,7 +19,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'tab3',
+        path: 'timeline',
         loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
         canActivate: [AuthGuard],
       },

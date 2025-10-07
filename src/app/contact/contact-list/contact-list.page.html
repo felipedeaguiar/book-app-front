@@ -1,5 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="primary">
+        <ion-button (click)="closeModal()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     <ion-title>Contatos</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,9 +22,13 @@
       detail
       (click)="openConversation(con)"
     >
+      <ion-avatar slot="start">
+        <img [src]="con.avatar || 'assets/avatar.svg'" />
+      </ion-avatar>
+
       <ion-label>
         <div class="conversation-header">
-          <strong>{{ con.name }}</strong>
+          <span>{{ con.name }}</span>
         </div>
       </ion-label>
     </ion-item>

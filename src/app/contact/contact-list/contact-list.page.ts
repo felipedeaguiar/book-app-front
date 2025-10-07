@@ -9,6 +9,7 @@ import {ModalController} from "@ionic/angular";
   styleUrls: ['./contact-list.page.scss'],
 })
 export class ContactListPage implements OnInit {
+
   public contacts: any;
 
   constructor(
@@ -35,5 +36,9 @@ export class ContactListPage implements OnInit {
     this.modalCtrl.dismiss();
 
     this.router.navigate(['/tabs/conversations', contact.id]);
+  }
+
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 }
