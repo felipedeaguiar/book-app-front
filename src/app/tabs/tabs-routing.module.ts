@@ -19,8 +19,8 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: 'timeline',
-        loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule),
+        path: 'feed',
+        loadChildren: () => import('../feed/feed.module').then(m => m.FeedModule),
         canActivate: [AuthGuard],
       },
       {
