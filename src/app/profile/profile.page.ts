@@ -13,6 +13,8 @@ export class ProfilePage implements OnInit {
   profileForm: FormGroup;
   isLoading = false;
   photo: string | null = null;
+  generos: any;
+  userGeneros: any;
 
   constructor(
     private apiService: ApiService,
@@ -25,12 +27,14 @@ export class ProfilePage implements OnInit {
       name: ['', [Validators.required]],
       old_password: [''],
       password: [''],
+      bio:['']
     });
   }
 
   ngOnInit() {
     this.getProfile();
     this.getProfilePic();
+    this.getGeneros();
   }
 
   async edit() {
@@ -72,8 +76,10 @@ export class ProfilePage implements OnInit {
           email: result.data.email,
           name: result.data.name,
           old_password: '',
-          password: ''
+          password: '',
+          bio: result.data.bio,
         });
+        this.userGeneros = result.data.generos.map((g: any) => g.id);
       },
       async (response) => {
         // const toast = await this.toastController.create({
@@ -91,4 +97,9 @@ export class ProfilePage implements OnInit {
     });
   }
 
+  getGeneros() {
+    this.apiService.get('generos').subscribe((result) => {
+      this.generos = result.data
+    });
+  }
 }

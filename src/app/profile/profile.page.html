@@ -28,6 +28,21 @@
         <ion-input type="password" placeholder="Nova senha" formControlName="password"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-icon name="create-outline" slot="start"></ion-icon>
+        <ion-textarea autoGrow="true" placeholder="Sobre mim" maxlength="500" formControlName="bio"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>Gêneros favoritos</ion-label>
+      </ion-item>
+
+      <div class="chips-container">
+        <ion-chip
+          [outline]="!userGeneros.includes(genero.id)"
+          *ngFor="let genero of generos">
+          {{ genero.nome }}
+        </ion-chip>
+      </div>
+      <ion-item>
         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
         <ion-radio placeholder="Two factor" formControlName="two_factor">Habilitar two factor</ion-radio>
       </ion-item>
