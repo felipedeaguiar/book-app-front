@@ -47,6 +47,8 @@ export class ProfilePage implements OnInit {
 
     await loading.present(); // Exibir o loading
 
+    this.profileForm.value.generos = this.userGeneros;
+
     this.apiService.put('user/profile', this.profileForm.value).subscribe(
       async (result) => {
         this.isLoading = false;
@@ -101,5 +103,13 @@ export class ProfilePage implements OnInit {
     this.apiService.get('generos').subscribe((result) => {
       this.generos = result.data
     });
+  }
+
+  toggleGenero(id: any) {
+      if (this.userGeneros.includes(id)) {
+        this.userGeneros = this.userGeneros.filter((g: any) => g !== id);
+      } else {
+        this.userGeneros.push(id);
+      }
   }
 }

@@ -38,6 +38,7 @@
       <div class="chips-container">
         <ion-chip
           [outline]="!userGeneros.includes(genero.id)"
+          (click)="toggleGenero(genero.id)"
           *ngFor="let genero of generos">
           {{ genero.nome }}
         </ion-chip>
